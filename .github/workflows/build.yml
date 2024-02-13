@@ -12,6 +12,7 @@ jobs:
 
     - name: build cross compiler
       run: |
+        sudo apt install libgmp3-dev libmpfr-dev libmpfr-doc 
         bash aarch64-linux-gnu.sh | tee logs.txt
 
     - name: compress cc
