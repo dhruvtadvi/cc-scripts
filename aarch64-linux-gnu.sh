@@ -34,7 +34,7 @@ download_sources() {
             if [ ! -f "$file_name" ]; then
                 wget "$url" -O "$file_name"
                 echo "extracting $file_name"
-                mkdir "$first_name"
+                mkdir "$first_name" -p
                 tar -xf "$file_name" -C "$first_name" --strip-components 1
             fi
         done
@@ -50,7 +50,7 @@ download_sources() {
     fi
     if [ ! -f "$(basename "$KERNEL_SOURCE")" ]; then
         wget "$KERNEL_SOURCE"
-        mkdir linux
+        mkdir linux -p
         tar -xf "$(basename "$KERNEL_SOURCE")" -C linux --strip-components 1
     fi
 }
@@ -59,7 +59,7 @@ download_sources() {
 build_binutils() {
 	cd binutils > /dev/null 2>&1 || cd binutils-gdb > /dev/null 2>&1
 	if [ -d build ]; then rm -rf build;fi
-	mkdir build
+	mkdir build -p
 	cd build
 
 	../configure CFLGAGS=$FLAGS CXXFLAGS=$FLAGS \
@@ -76,7 +76,7 @@ build_binutils() {
 setup_kernel_headers() {
 	cd linux
 	make ARCH=arm64 INSTALL_HDR_PATH=$PREFIX/$TARGET headers_install
-	mkdir $PREFIX/$TARGET/usr
+	mkdir $PREFIX/$TARGET/usr -p
 	ln -sr $PREFIX/$TARGET/include $PREFIX/$TARGET/usr/include
 	cd ..
 }
@@ -85,7 +85,7 @@ build_gcc() {
 	cd gcc
 	sh contrib/download_prerequisites
 	if [ -d build ]; then rm -rf build;fi
-	mkdir build
+	mkdir build -p
 	cd build
 	
 	../configure CFLGAGS=$FLAGS CXXFLAGS=$FLAGS \
@@ -104,7 +104,7 @@ build_gcc() {
 build_glibc() {
 	cd glibc
 	if [ -d build ]; then rm -rf build;fi
-	mkdir build
+	mkdir build -p
 	cd build
 
 	../configure CFLAGS=$FLAGS CXXFLAGS=$FLAGS \
