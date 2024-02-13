@@ -1,0 +1,66 @@
+name: cross-compiler builder
+on: 
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: build cross compiler
+      run: |
+        bash aarch64-linux-gnu.sh | tee logs.txt
+
+    - name: compress cc
+      run: |
+        tar -cvzf cc_x64_aarch64_linux_gnu.tar.xz out/*
+        
+    - name: Get Version Info
+      id: tool_versions
+      run: |
+        binutilsv=$(cat .version_info/binutils.txt)
+        gccv=$(cat .version_info/gcc.txt)
+        glibcv=$(cat .version_info/glibc.txt)
+        lapiv=$(cat .version_info/glibc.txt)
+        echo "::set-output name=gccv::$gccv"
+        echo "::set-output name=glibcv::$glibcv"
+        echo "::set-output name=lapiv::$lapiv"
+        echo "::set-output name=binutilsv::$binutilsv"
+        
+    - name: Create Release
+      id: create-new-release
+      uses: actions/create-release@v1
+      env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+          tag_name: ${{ github.run_number }}
+          release_name: Release ${{ github.run_number }}
+          draft: false
+          prerelease: false
+          body: |
+            binutils: ${{ steps.tool_versions.outputs.binutilsv }}
+            gcc: ${{ steps.tool_versions.outputs.gccv }}
+            glibc: ${{ steps.tool_versions.outputs.glibcv }}
+            linux-headers: ${{ steps.tool_versions.outputs.lapiv }}
+    - name: Upload Log
+      uses: actions/upload-release-asset@v1
+      env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+          upload_url: ${{ steps.create-new-release.outputs.upload_url }}
+          asset_path: logs.txt
+          asset_name: logs.txt
+          asset_content_type: text/plain
+
+    - name: Upload cc to releases
+      uses: actions/upload-release-asset@v1
+      env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+          upload_url: ${{ steps.create-new-release.outputs.upload_url }}
+          asset_path: cc_x64_aarch64_linux_gnu.tar.xz
+          asset_name: cross_compiler_x64_aarch64_linux_gnu.tar.xz
+          asset_content_type: application/x-xz
