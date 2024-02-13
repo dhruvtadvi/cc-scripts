@@ -1,3 +1,4 @@
+set -e
 BLEEDING=1
 CWD=$(pwd)
 BINUTILSV=
