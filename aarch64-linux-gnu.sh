@@ -59,6 +59,7 @@ build_binutils() {
 	cd build
 
 	../configure CFLGAGS=$FLAGS CXXFLAGS=$FLAGS \
+		--disable-werror \
 		--prefix=$PREFIX \
 		--target=$TARGET \
 		--enable-gdb
@@ -84,6 +85,7 @@ build_gcc() {
 	cd build
 	
 	../configure CFLGAGS=$FLAGS CXXFLAGS=$FLAGS \
+		--disable-werror \
 		--disable-libsanitizer \
 		--prefix=$PREFIX \
 		--target=$TARGET \
@@ -102,6 +104,7 @@ build_glibc() {
 	cd build
 
 	../configure CFLAGS=$FLAGS CXXFLAGS=$FLAGS \
+		--disable-werror \
 		--prefix=$PREFIX/$TARGET \
 		--build=$MACHTYPE \
 		--host=$TARGET \
