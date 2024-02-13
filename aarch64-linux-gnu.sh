@@ -53,6 +53,7 @@ download_sources() {
 
 build_binutils() {
 	cd binutils > /dev/null 2>&1 || cd binutils-gdb > /dev/null 2>&1
+	if [ -d build ]; then rm -rf build;fi
 	mkdir build
 	cd build
 
@@ -77,6 +78,7 @@ setup_kernel_headers() {
 build_gcc() {
 	cd gcc
 	sh contrib/download_prerequisites
+	if [ -d build ]; then rm -rf build;fi
 	mkdir build
 	cd build
 	
@@ -94,6 +96,7 @@ build_gcc() {
 
 build_glibc() {
 	cd glibc
+	if [ -d build ]; then rm -rf build;fi
 	mkdir build
 	cd build
 
@@ -148,3 +151,5 @@ build_binutils
 setup_kernel_headers
 build_gcc
 build_glibc
+
+
