@@ -152,4 +152,10 @@ setup_kernel_headers
 build_gcc
 build_glibc
 
-
+#export the version to the .version_info directory
+cd $CWD
+mkdir .version_info -p
+echo $BINUTILSV > $CWD/.version_info/binutils.txt
+echo $GCCV > $CWD/.version_info/gcc.txt
+echo $GLIBCV > $CWD/.version_info/glibc.txt
+echo $LAPIV > $CWD/.version_info/linux.txt
