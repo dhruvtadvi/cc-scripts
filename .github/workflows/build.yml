@@ -17,7 +17,7 @@ jobs:
 
     - name: compress cc
       run: |
-        tar -cvzf cc_x64_aarch64_linux_gnu.tar.xz out/*
+        tar -chzf cc_x64_aarch64_linux_gnu.tar.gz out/*
         
     - name: Get Version Info
       id: tool_versions
@@ -62,6 +62,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
           upload_url: ${{ steps.create-new-release.outputs.upload_url }}
-          asset_path: cc_x64_aarch64_linux_gnu.tar.xz
-          asset_name: cross_compiler_x64_aarch64_linux_gnu.tar.xz
-          asset_content_type: application/x-xz
+          asset_path: cc_x64_aarch64_linux_gnu.tar.gz
+          asset_name: cross_compiler_x64_aarch64_linux_gnu.tar.gz
+          asset_content_type: application/gzip
