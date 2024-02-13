@@ -23,34 +23,38 @@ repo_source_urls=(
 		"https://gcc.gnu.org/git/gcc.git" \
 		"https://sourceware.org/git/glibc.git"
 	)
-
 download_sources() {
     if [ $BLEEDING -eq 0 ]; then
-	for url version in $releases_source_urls[@]; do 
-	    file_name=$(basename $url)
-	    first_name=$(echo $file_name | awk -F"-" '{print $1}')
-	    if [ ! -f $file_name ]; then
-		wget $url -O $file_name
-		echo "extracting $file_name"
-		mkdir $first_name
-		tar -xf $file_name -C $first_name --strip-components 1
-	    fi
-	done
+        # Loop over indices of releases_source_urls array
+        for ((i = 0; i < ${#releases_source_urls[@]}; i+=2)); do
+            url=${releases_source_urls[i]}
+            version=${releases_source_urls[i+1]}
+            file_name=$(basename "$url")
+            first_name=$(echo "$file_name" | awk -F"-" '{print $1}')
+            if [ ! -f "$file_name" ]; then
+                wget "$url" -O "$file_name"
+                echo "extracting $file_name"
+                mkdir "$first_name"
+                tar -xf "$file_name" -C "$first_name" --strip-components 1
+            fi
+        done
     else 
-	for url in $repo_source_urls[@]; do
-	    file_name=$(basename $url .git)
-	    first_name=$(echo $file_name | awk -F"-" '{print $1}')
-	    if [ ! -d "$file_name" ]; then
-		git clone $url --depth=1
-	    fi
-	done
+        # Loop over indices of repo_source_urls array
+        for url in "${repo_source_urls[@]}"; do
+            file_name=$(basename "$url" .git)
+            first_name=$(echo "$file_name" | awk -F"-" '{print $1}')
+            if [ ! -d "$file_name" ]; then
+                git clone "$url" --depth=1
+            fi
+        done
     fi
-    if [ ! -f $(basename $KERNEL_SOURCE) ]; then
-	wget $KERNEL_SOURCE
-	mkdir linux
-	tar -xf $(basename $KERNEL_SOURCE) -C linux --strip-components 1
+    if [ ! -f "$(basename "$KERNEL_SOURCE")" ]; then
+        wget "$KERNEL_SOURCE"
+        mkdir linux
+        tar -xf "$(basename "$KERNEL_SOURCE")" -C linux --strip-components 1
     fi
 }
+
 
 build_binutils() {
 	cd binutils > /dev/null 2>&1 || cd binutils-gdb > /dev/null 2>&1
