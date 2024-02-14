@@ -25,7 +25,7 @@ jobs:
         binutilsv=$(cat .version_info/binutils.txt)
         gccv=$(cat .version_info/gcc.txt)
         glibcv=$(cat .version_info/glibc.txt)
-        lapiv=$(cat .version_info/glibc.txt)
+        lapiv=$(cat .version_info/linux.txt)
         echo "::set-output name=gccv::$gccv"
         echo "::set-output name=glibcv::$glibcv"
         echo "::set-output name=lapiv::$lapiv"
