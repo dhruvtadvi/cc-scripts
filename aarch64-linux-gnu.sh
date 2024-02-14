@@ -87,14 +87,17 @@ build_gcc() {
 	if [ -d build ]; then rm -rf build;fi
 	mkdir build -p
 	cd build
-	
+
 	../configure CFLGAGS=$FLAGS CXXFLAGS=$FLAGS \
+		--enable-linker-build-id \
+		--disable-nls \
+		--enable-threads=posix \
 		--disable-werror \
 		--disable-libsanitizer \
 		--prefix=$PREFIX \
 		--target=$TARGET \
 		--includedir=$PREFIX/$TARGET/include \
-		--enable-languages=c,c++
+		--enable-languages=c,c++,fortran
 
 	make all-gcc -j$JOBS
 	make install-gcc
